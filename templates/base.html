@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head> 
+    <meta charset ="UTF-8">
+    <title> Title </title> <!-- è quello che vediamo nella scheda in alto-->
+</head>
+    <body>
+        <header><!-- ciò che sta fisso-->
+            <h1> Hello world! </h1>
+            <p> This is a simple FastAPI app.</p>
+        </header>
+        <nav>
+            <a href="/"> Home </a> <!-- serve per inserire il link --> 
+            <a href="http://wikipedia.it"> Wikipedia </a> <!-- serve per inserire il link --> 
+            <a href="#"> Qualcosa </a> <!-- non fa niente --> 
+        </nav>
+        <div class="container"> <!-- la classe definirà la formattazione del nostro css --> 
+            {% block content%} <!-- qui scriviamo tutte le info relative a jinja, content è il nome --> 
+
+            {% endblock %}
+        </div>
+        <footer>
+            <p> &copy; 2026 Porgrammazione Web UNICA</p> <!-- parte che sta fissa in basso nella pagine  --> 
+        </footer>
+    </body>
+</html>

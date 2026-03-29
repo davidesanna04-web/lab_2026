@@ -14,7 +14,7 @@
         <nav>
             <a href="/"> Home </a> <!-- serve per inserire il link --> 
             <a href="{{url_for('products')}}"> Products </a> <!-- non fa niente --> 
-            <a href="{{url_for('add_product')}}">Add product</a>
+            <a href="{{url_for('add_product')}}">Add product</a><!-- tasto per aggiungere un nuovo prodotto con link associato ad un altra pagina --> 
         </nav>
         <div class="container"> <!-- la classe definirà la formattazione del nostro css --> 
             {% block content%} <!-- qui scriviamo tutte le info relative a jinja, content è il nome --> 

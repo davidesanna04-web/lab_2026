@@ -8,6 +8,7 @@ from typing import Annotated
 from pydantic import Field, BaseModel
 
 
+#classe che mi serve per verificare con PYDANTIC se i dati inseriti rispecchiano questi parametri specifici 
 class Product(BaseModel):
     name:  Annotated[str,  Field(min_length=3, max_length=30)]
     price:  Annotated[float, Field(gt=0)]
@@ -19,12 +20,14 @@ app=FastAPI()
 app.mount("/static",StaticFiles(directory="static"), name="static") #il primo parametro è ... il secondo è la cartella dove mettiamo i file ma dentro Staticfiles
 templates= Jinja2Templates(directory="templates")#diciamo al motore di templating dove sono i nostri template
 
+#prodotti già inseriti
 product_list=[
     {"nome": "notebook dell", "price": 29999.77,"location":"cagliari"},
     {"nome": " dell", "price": 65.77,"location":"oristano"},
     {"nome": "notebook ", "price": 43.77,"location":"olbia"}
 ]
 
+#ciò che vedo appena apro il sito e gli passo home_html
 @app.get("/", response_class=HTMLResponse)#parameto che specifica in che formato fastapi deve convertire ilr isultato
 def home(request:Request):#parametro passato automaticametne da fastapi, request conterrà la richiesta http get che riceve questa funzione(non ci interessa perchè)
 
@@ -45,7 +48,8 @@ def home(request:Request):#parametro passato automaticametne da fastapi, request
     )
 
 
-    
+
+#funzione che mostra la pagina con la lista di prodotti    
 @app.get("/products", response_class=HTMLResponse)
 def products(request: Request):
     return templates.TemplateResponse(
@@ -54,14 +58,15 @@ def products(request: Request):
         context={"products_list": product_list}
     )
 
-
-@app.get("/product_form", response_class=HTMLResponse)
+#funzione che mostra la pagina con il form per inserire i prodotti 
+@app.get("/product_form", response_class=HTMLResponse) #mostra la pagina con il form 
 def add_product(
     request: Request,
     name: str | None = None,
     price: float | None = None,
     location: str | None = None
 ):
+    #significa che posso aggiungere un prodotto anche se mi arrivano nell'url come query parameters
     if name and price and location:
         new_product = {
             "nome": name,
@@ -70,19 +75,19 @@ def add_product(
         }
         product_list.append(new_product)
 
-    return templates.TemplateResponse(
+    return templates.TemplateResponse( #mostra la pagina che l'utente vede per inserire i dati
         request=request,
-        name="product_form.html"
+        name="product_form.html" 
     )
 
 #funzione per accettare l'input del form
 @app.post("/insert_product")
 def insert_product(
-    product:Annotated[Product,Form()]
+    product:Annotated[Product,Form()] #con questo ricevo i dati dal form HTML, valido i dati con PYDANTIC e poi lo passo alla funzione 
 ):
    
    
-    product_list.append(product.model_dump())
+    product_list.append(product.model_dump()) #converto l'oggetto in un dizionario e lo salvo nella lista
     return "Porduct added successfully"
 
 
@@ -90,7 +95,7 @@ def insert_product(
 
 @app.post("/insert_product_json")
 def insert_product_json(
-    product:Product
+    product:Product #con questo Fastapi capisce automaticamente che i dati devono arrivare nel body della richiesta e nel formato JSON
 ):
     print(product)
 

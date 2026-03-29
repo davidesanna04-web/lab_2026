@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
-
+<!-- questo stabilisce la parte di programma che farà parte di base perchè
+ base.html è il layout principale, e le altre pagine inseriscono solo alcune parti dentro di esso. -->
 {% block content %}
 
 <table>
@@ -11,6 +12,7 @@
         <th>Price</th>
         <th>Location</th>
     </tr>
+    <!-- per ogni prodotto nella lista products_list:crea una riga della tabella e inserisci i dati del prodotto -->
     {% for p in products_list %}
 
     <tr>

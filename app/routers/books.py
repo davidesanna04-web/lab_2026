@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Path, HTTPException
+from fastapi import APIRouter, Path, HTTPException, Query
 from schemas.book import Book,books
 from typing import Annotated
 from schemas.review import Review
@@ -6,10 +6,15 @@ from schemas.review import Review
 books_router = APIRouter(prefix="/books", tags=["books"])
 
 @books_router.get("/")
-def get_all_books() -> list[Book]:
+def get_all_books(
+    sort: Annotated[bool,Query(description="Sort books by their review")] = False
+) -> list[Book]:
     """ Returns the list ok available books. """
-
-    return list(books.values())
+    if sort: 
+        return sorted(books.values(), key = lambda book:book.review)
+    else:
+        return list(books.values())
+    
 
 
 @books_router.get("/{id}")
@@ -36,5 +41,40 @@ def add_review(
         raise HTTPException(status_code=404, detail= "Book not found")
 
 
+@books_router.post("/")
+def add_book(book : Book):
+    """ Add a new book."""
+    if book.id in books:
+        raise HTTPException(status_code=403, detail = "Book already exists" )
+    books[book.id] = book 
+    return "Book added successfully"
 
+
+@books_router.put("/{id}")
+def replace_book(
+    id: Annotated[int,Path(description="The id of the book to retrieve. ")],
+    book:Book
+):
+    """Replaces the book with the given ID"""
+    if not id in books:
+        raise HTTPException(status_code=404, detail="Book not found")
+    books[id]= book
+    return "Book replaced successfully"
+
+@books_router.delete("/")
+def delete_all_books():
+    """Deletes all the stored books."""
+    books.clear()
+    return "All books deleted successfully"
+
+@books_router.delete("/{id}")
+def delete_book(
+    id: Annotated[int,Path(description="The id of the book to delete. ")],
+):
+    """Deletes the book with the given ID"""
+    if not id in books:
+        raise HTTPException(status_code=404, detail="Book non found")
+    
+    del books[id]
+    return "Book deleted successfully"
 
